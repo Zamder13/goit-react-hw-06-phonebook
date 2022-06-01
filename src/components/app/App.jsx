@@ -16,7 +16,6 @@ const App = () => {
   });
 
   const filter = useSelector((state) => {
-    console.log("state.contacts.filter", state.contacts.filter);
     return state.contacts.filter;
   });
 
