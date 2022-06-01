@@ -18,9 +18,9 @@ export const contactFormSlice = createSlice({
     },
 
     deleteContact: (state, action) => {
-      const { id } = action.payload;
-      const delContact = state.items.find((item) => item.id === id);
-      state.items.splice([delContact], 1);
+      const contactId = action.payload;
+      const idx = state.items.findIndex((item) => item.id === contactId);
+      state.items.splice(idx, 1);
     },
 
     filterContact: (state, action) => {

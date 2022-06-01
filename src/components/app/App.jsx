@@ -8,7 +8,7 @@ import {
   contactAdded,
   deleteContact,
   filterContact,
-} from "../contactForm/contactFormSlice";
+} from "../redux/contactFormSlice";
 
 const App = () => {
   const contacts = useSelector((state) => {
