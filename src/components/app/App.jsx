@@ -1,27 +1,30 @@
-import React, { useState, useEffect } from "react";
 import Form from "../contactForm/ContactForm";
 import ContactList from "../contactsList/ContactList";
 import Filter from "../filter/Filter";
 import { nanoid } from "nanoid";
 import "./App.css";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  contactAdded,
+  deleteContact,
+  filterContact,
+} from "../contactForm/contactFormSlice";
 
 const App = () => {
-  const [contacts, setContacts] = useState([
-    { id: "id-1", name: "Rosie Simpson", number: "459-12-56" },
-    { id: "id-2", name: "Hermione Kline", number: "443-89-12" },
-    { id: "id-3", name: "Eden Clements", number: "645-17-79" },
-    { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
-  ]);
+  const contacts = useSelector((state) => {
+    return state.contacts.items;
+  });
 
-  const [filter, setFilter] = useState("");
+  const filter = useSelector((state) => {
+    console.log("state.contacts.filter", state.contacts.filter);
+    return state.contacts.filter;
+  });
 
-  useEffect(() => {
-    setContacts(JSON.parse(localStorage.getItem("contacts")));
-  }, []);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    localStorage.setItem("contacts", JSON.stringify(contacts));
-  }, [contacts]);
+  const removeContact = (contactId) => {
+    return dispatch(deleteContact(contactId));
+  };
 
   const setContact = (name, number) => {
     if (
@@ -36,20 +39,16 @@ const App = () => {
         name: name,
         number: number,
       };
-
-      setContacts((prevContacts) => [...prevContacts, contact]);
+      dispatch(contactAdded(contact));
     }
   };
 
-  const deleteContact = (contactId) => {
-    setContacts(contacts.filter((contact) => contact.id !== contactId));
-  };
-
   const changeFilter = (event) => {
-    setFilter(event.currentTarget.value);
+    const filterdName = event.target.value;
+    dispatch(filterContact(filterdName));
   };
 
-  const getfilteredContacts = () => {
+  const filteredContacts = () => {
     const normalizedFilter = filter.toLowerCase();
     return contacts.filter((contact) =>
       contact.name.toLowerCase().includes(normalizedFilter)
@@ -63,8 +62,8 @@ const App = () => {
       <h2>Contacts</h2>
       <Filter value={filter} onChange={changeFilter} />
       <ContactList
-        persons={getfilteredContacts()}
-        onDeleteContact={deleteContact}
+        persons={filteredContacts(contacts)}
+        onDeleteContact={removeContact}
       />
     </>
   );
